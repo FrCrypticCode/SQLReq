@@ -1,0 +1,11 @@
+[package]
+name = "sqlreq"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+eframe = "0.23.0"
+egui = "0.23.0"
+mysql = "24.0.0"
