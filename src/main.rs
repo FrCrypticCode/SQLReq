@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"]
+
 use core::panic;
 use std::sync::{Arc,Mutex};
 use eframe::egui;
@@ -31,7 +33,29 @@ fn main() {
             });
             ui.horizontal(|ui|{
                 ui.label("Pwd : ");
-                ui.text_edit_singleline(&mut conf.password);
+                let pass = ui.text_edit_singleline( &mut conf.disp);
+                if pass.changed() && conf.show == false{
+                    if conf.disp.as_str().chars().last().unwrap().to_string().as_str() == "*"{
+                        conf.password.pop();
+                    }
+                    else{
+                        conf.password += conf.disp.as_str().chars().last().unwrap().to_string().as_str();
+                    }
+                    
+                }
+                else if pass.changed() && conf.show == true{
+                    conf.password = conf.disp.clone();
+                }
+                let cb = ui.checkbox(&mut conf.show, "Show");
+                if cb.changed() && conf.show == false{
+                    conf.password = conf.disp.clone();
+                }
+                if conf.show== false{
+                    conf.disp = "*".repeat(conf.disp.len());
+                }
+                else{
+                    conf.disp = conf.password.clone();
+                }
             });
             ui.horizontal(|ui|{
                 ui.label("Address : ");

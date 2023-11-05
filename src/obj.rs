@@ -3,6 +3,8 @@ use mysql::Pool;
 pub struct Config{
     pub user:String,
     pub password:String,
+    pub disp:String,
+    pub show:bool,
     pub addr:String,
     pub port:u16,
     pub db:String
@@ -12,6 +14,8 @@ impl Default for Config{
         Self {
             user:String::new(),
             password:String::new(),
+            disp:String::new(),
+            show:false,
             addr:String::new(),
             port:3306,
             db:String::new()
