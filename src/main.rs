@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+//#![windows_subsystem = "windows"]
 
 use core::panic;
 use std::sync::{Arc,Mutex};
@@ -35,13 +35,16 @@ fn main() {
                 ui.label("Pwd : ");
                 let pass = ui.text_edit_singleline( &mut conf.disp);
                 if pass.changed() && conf.show == false{
-                    if conf.disp.as_str().chars().last().unwrap().to_string().as_str() == "*"{
-                        conf.password.pop();
+                    if conf.disp.as_str().chars().last() == Some('*'){
+                        if conf.disp.len() == 0{
+                            conf.password.pop();
+                        }
                     }
                     else{
-                        conf.password += conf.disp.as_str().chars().last().unwrap().to_string().as_str();
-                    }
-                    
+                        if let Some(y) = conf.disp.as_str().chars().last(){
+                            conf.password.push(y);
+                        }  
+                    } 
                 }
                 else if pass.changed() && conf.show == true{
                     conf.password = conf.disp.clone();
@@ -67,7 +70,6 @@ fn main() {
                     ui.label("Port : ");
                     ui.text_edit_singleline(&mut g.p);
                 });
-
             }
             ui.horizontal(|ui|{
                 ui.label("Database : ");
@@ -138,18 +140,28 @@ fn main() {
                                 if s.req.contains("SELECT") && x.len()>0{   // Traiter le Vec<Row>
                                     s.err = false;
                                     s.msg_e = String::from("");
-                                    
                                     let mut table:Vec<Vec<String>> =vec![];
-
+                                    let mut compt = 1;
                                     for row in x{
                                         let mut v:Vec<String> = vec![];
+                                        let mut n_cols:Vec<String> = vec![];
                                         for col in row.columns().into_iter(){
                                             let col_name = col.name_str();
+                                            if compt == 1{
+                                                n_cols.push(col_name.to_string());
+                                            }
                                             if let Some(value) = row.get::<String,&str>(&col_name){
                                                 v.push(value);
                                             }
                                         }
-                                        table.push(v);
+                                        if compt == 1{
+                                            table.push(n_cols);
+                                            table.push(v);
+                                        }
+                                        else{
+                                            table.push(v);
+                                        }
+                                        compt += 1; 
                                     }
                                     s.res = table;
                                 }
